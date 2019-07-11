@@ -1,5 +1,47 @@
 # Pissing everyone off with JEA *(Just Enough Administration)*
 
+## Subjects
+* What is JEA
+* 
+
+
+what is jea
+    acronym
+what are some use cases
+    When your CISO is pissed off and hates powershell, you can offer JEA as an alternative to please C levels
+    when you have a task that needs local admin but you're worried about security
+    root of it is it's a JEA utility
+What are some prerequisites to working with JEA?
+    basic psremoting knowledge
+    basic module creation knowledge
+    splatting
+    have a basic security conscience
+how does it work
+    get into how pssessions work
+    show pre-registered pssession configurations    
+what cmdlets do you use to manage JEA
+    get-pssessionconfiguration
+    register-pssessionconfiugration
+    new-psrolecapabilityfile
+    enter-pssession
+Define a role
+    manually creating the file
+    splatting
+create a powershell module
+    create the root folder
+    create the psd1
+    create the psm1
+    create the keyword folder
+    add the pssessionconfiguration file to the keyword folder
+Create a session configuration
+    create it
+    associate it with the role
+Apply the session configuration to a computer
+    move the new module over to the computer you want to manage
+    call register-pssessionconfiguration
+A practical example of how I use it in my environment
+    With DSC to issue certificates and call update-dscconfiguration
+
 ## FAQ
 
 ### What is JEA?
