@@ -10,12 +10,12 @@ what is jea
 what are some use cases
     When your CISO is pissed off and hates powershell, you can offer JEA as an alternative to please C levels
     when you have a task that needs local admin but you're worried about security
-    root of it is it's a JEA utility
+    root of it is it's a security utility.
+    powershell is used in a large number of malicious attacks today. Using JEA can give you better posture to deal with these kinds of threats.
 What are some prerequisites to working with JEA?
     basic psremoting knowledge
     basic module creation knowledge
     splatting
-    have a basic security conscience
 how does it work
     get into how pssessions work
     show pre-registered pssession configurations    
@@ -36,6 +36,8 @@ create a powershell module
 Create a session configuration
     create it
     associate it with the role
+Common mistakes
+    defining a cmdlet as a role or vice versa
 Apply the session configuration to a computer
     move the new module over to the computer you want to manage
     call register-pssessionconfiguration
