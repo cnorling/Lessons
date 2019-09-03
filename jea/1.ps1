@@ -23,11 +23,4 @@ New-PSRoleCapabilityFile @roleparameters
 <#
 check who knows splatting
 You can run commands by creating a hashtable of parameter names and their values, then execute the command with the variable as the parameters.
-example:
-Get-Service -name "WinRM"
-
-$parameters = @{
-    name = "WinRM"
-}
-Get-Service @parameters
 #>
