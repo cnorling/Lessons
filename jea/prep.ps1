@@ -23,7 +23,7 @@ $accounts = @{
     # create a credential object for bob
     bob = @{
         username = "home.lab\Bob.Saget"
-        password = ConvertTo-SecureString -AsPlainText -force -String "Your password sucks bob1"
+        password = ConvertTo-SecureString -AsPlainText -force -String "Bob's sucky password1"
     }
 }
 $credential = @{
