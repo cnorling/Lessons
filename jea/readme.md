@@ -61,7 +61,7 @@ Honestly, setting up JEA is preetty easy. Configuring what commands a person can
 JEA uses the same ports as WinRM (5985,5986)
 
 ### File extensions?
-There are a couple powershell files that are used for JEA?
+There are a couple powershell files that are used for JEA.
 |Extension|Name|Purpose|
 |.psrc|PS Role Capability|Creates "Roles" that decide what commands a user can use|
 |.pssc|PS Session Config|Creates the session the user connects to|
@@ -95,4 +95,4 @@ There are other risks to consider. If you are deploying JEA on a domain controll
 With that said, what other commands may allow you to get around JEA?
 
 ### I'm never going to use this in my environment.
-You might not, but i'm hoping this lesson will at least give you more background on how powershell remoting works. If it ever comes up in a discussion, or someone else suggests it, you can chime in. Just because you don't use it now doesn't mean you won't encounter it in the future!
+You might not, but i'm hoping this lesson will at least give you more background on how powershell remoting works. If it ever comes up in a discussion, or someone else suggests JEA, you can chime in. Just because you don't use it now doesn't mean you won't encounter it in the future!

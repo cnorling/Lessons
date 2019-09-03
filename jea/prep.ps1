@@ -62,6 +62,16 @@ Invoke-Command -VMname "DOMAIN-1" -Credential $credential.localadmin {
     Install-ADDSForest @using:param
 }
 
+# configure DNS and DHCP for your domain
+Invoke-Command -VMname "DOMAIN-1" -Credential $credential.domainadmin {
+    Add-DnsServerPrimaryZone -NetworkID 10.10.10.0/24 -ZoneFile "10.10.10.10.in-addr.arpa.dns"
+    Add-DnsServerForwarder -IPAddress 8.8.8.8 -PassThru
+    netsh dhcp add securitygroups
+    Add-DHCPServerv4Scope -Name “Employee Scope” -StartRange 10.10.10.10 -EndRange 10.10.10.254 -SubnetMask 255.255.255.0 -State Active -LeaseDuration 1.00:00:00
+    Set-DHCPServerv4OptionValue -ScopeID 10.10.10.0 -DnsDomain home.lab -DnsServer 10.10.10.10 -Router 10.10.10.1
+    Add-DhcpServerInDC -DnsName "home.lab" -IpAddress 10.10.10.10
+}
+
 # create a domain account, a group, and a GMSA to use ... and a KDS root key so you can make GMSAs before the 10 hour convergence cycle
 # https://social.technet.microsoft.com/Forums/ie/en-US/82617035-254f-4078-baa2-7b46abb9bb71/newadserviceaccount-key-does-not-exist?forum=winserver8gen
 $user = @{
@@ -92,10 +102,33 @@ invoke-command -VMname "DOMAIN-1" -Credential $credential.domainadmin {
 
 ## setup SERVER-1
 # create the VM
-# rename the computer
-# join the HOME.LAB domain
+New-VMFromTemplate -name "SERVER-1" -vhdxpath "D:\hyperv\disks\" -vhdxtemplate "D:\hyperv\disks\template.vhdx" -switch "domain" -memory 3
+
+# sysprep to generate a new sid
+invoke-command -VMName "SERVER-1" -Credential $credential.localadmin {
+    & "C:\windows\system32\sysprep\sysprep.exe" /generalize /shutdown /oobe
+}
+# rename the computer and set a static IP
+invoke-command -VMName "SERVER-1" -Credential $credential.localadmin {
+    #ipconfig /renew
+    Rename-Computer -NewName "SERVER-1" 
+    Add-Computer -domainname "home.lab" -credential $using:credential.domainadmin
+    Restart-Computer
+}
 
 ## setup SERVER-2
 # create the VM
-# rename the computer
-# join the HOME.LAB domain
+New-VMFromTemplate -name "SERVER-1" -vhdxpath "D:\hyperv\disks\" -vhdxtemplate "D:\hyperv\disks\template.vhdx" -switch "domain" -memory 3
+
+# sysprep to generate a new sid
+invoke-command -VMName "SERVER-1" -Credential $credential.localadmin {
+    & "C:\windows\system32\sysprep\sysprep.exe" /generalize /shutdown /oobe
+}
+
+# rename the computer and set a static IP
+invoke-command -VMName "SERVER-1" -Credential $credential.localadmin {
+    #ipconfig /renew
+    Rename-Computer -NewName "SERVER-1" 
+    Add-Computer -domainname "home.lab" -credential $using:credential.domainadmin
+    Restart-Computer
+}
