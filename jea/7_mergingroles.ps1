@@ -11,15 +11,17 @@ $psrc = @{
         "initialize-disk"
     )
 }
+New-PSRoleCapabilityFile @psrc
+
 $pssc = @{
-    Path = ".\jeamodule\jea.pssc"
+    Path = ".\jeamodule\jea_basic.pssc"
     RunAsVirtualAccount = $true
     TranscriptDirectory = 'C:\Transcripts\'
     LanguageMode = "FullLanguage"
     SessionType = "RestrictedRemoteServer"
     Full = $true
     RoleDefinitions = @{
-        "home.lab\jea" = @{
+        "home.lab\jea_basic" = @{
             RoleCapabilities = @(
                 "jea_basic"
                 "jea_advanced"
@@ -27,18 +29,17 @@ $pssc = @{
         }
     }
 }
-New-PSRoleCapabilityFile @psrc
 New-PSSessionConfigurationFile @pssc
 
 # copy the new role and session out
-Copy-Item -ToSession $session -path ".\jeamodule\jea.pssc" -Destination "C:\Program Files\WindowsPowerShell\Modules\jeamodule\jea.pssc" -Force
+Copy-Item -ToSession $session -path ".\jeamodule\jea_basic.pssc" -Destination "C:\Program Files\WindowsPowerShell\Modules\jeamodule\jea_basic.pssc" -Force
 Copy-Item -ToSession $session -path ".\jeamodule\rolecapabilities\jea_advanced.psrc" -Destination "C:\Program Files\WindowsPowerShell\Modules\jeamodule\rolecapabilities\jea_advanced.psrc" -Force
 invoke-command $jeasession {
     get-command
 }
 # the new commands won't show up until we re-establish the powershell session
 
-$jeasession = New-PSSession -ComputerName "SERVER-1" -Credential $credential.bob -ConfigurationName "jea"
+$jeasession = New-PSSession -ComputerName "SERVER-1" -Credential $credential.bob -ConfigurationName "jea_basic"
 invoke-command $jeasession {
     get-command
 }
@@ -60,14 +61,14 @@ invoke-command -VMname "DOMAIN-1" -Credential $credential.domainadmin {
 
 # add the new role to the PSSC and publish a new PSRC
 $pssc = @{
-    Path = ".\jeamodule\jea.pssc"
+    Path = ".\jeamodule\jea_basic.pssc"
     RunAsVirtualAccount = $true
     TranscriptDirectory = 'C:\Transcripts\'
     LanguageMode = "FullLanguage"
     SessionType = "RestrictedRemoteServer"
     Full = $true
     RoleDefinitions = @{
-        "home.lab\jea" = @{
+        "home.lab\jea_basic" = @{
             RoleCapabilities = @(
                 "jea_basic"
                 "jea_advanced"
@@ -81,13 +82,17 @@ $pssc = @{
     }
 }
 $psrc = @{
-    path = ".\jeamodule\rolecapabilities\dns_admins.psrc"
+    path = ".\jeamodule\rolecapabilities\jea_advanced.psrc"
     visiblefunctions = @(
         "Get-DnsServerZone"
         "Get-DnsServer"
         "Get-DnsClient"
         "Clear-DnsClientCache"
         "Enable-DnsServerPolicy"
+        "test-path"
+    )
+    visibleproviders = @(
+        "environment"
     )
 }
 New-PSSessionConfigurationFile @pssc
@@ -95,11 +100,17 @@ New-PSRoleCapabilityFile @psrc
 invoke-command $session {
     Remove-Item -recurse -path "C:\Program Files\WindowsPowerShell\Modules\jeamodule"
 }
-Copy-Item -ToSession $session -path ".\jeamodule" -Recurse -Destination "C:\Program Files\WindowsPowerShell\Modules\jeamodule" -Force
+Copy-Item -ToSession $session -recurse -path ".\jeamodule" -Destination "C:\Program Files\WindowsPowerShell\Modules\jeamodule" -Force
 
 invoke-command $session {
-    set-pssessionconfiguration -name "jea" -path "C:\Program Files\WindowsPowerShell\Modules\jeamodule\jea.pssc"
+    unregister-pssessionconfiguration -name "jea_basic"
+    register-pssessionconfiguration -name "jea_basic" -Path "C:\Program Files\WindowsPowerShell\Modules\jeamodule\jea_basic.pssc"
     restart-service -name winrm
 }
 
-$jeasession = New-PSSession -ComputerName "SERVER-1" -Credential $credential.bob -ConfigurationName "jea"
+$jeasession = New-PSSession -ComputerName "SERVER-1" -Credential $credential.bob -ConfigurationName "jea_basic"
+
+# the commands from two different roles are now available!
+invoke-command $jeasession {
+    get-command
+}

@@ -42,6 +42,8 @@ Apply the session configuration to a computer
     call register-pssessionconfiguration
 A practical example of how I use it in my environment
     With DSC to issue certificates and call update-dscconfiguration
+people not tools
+    tools can use JEA just as much as people can. If you have a sensitive cronjob that reaches out to other servers, consider using JEA to make it more secure.
 
 ## FAQ
 

@@ -38,14 +38,14 @@ New-PSRoleCapabilityFile @psrc
 
 # create a PSSC
 $pssc = @{
-    Path = ".\jeamodule\jea.pssc"
+    Path = ".\jeamodule\jea_basic.pssc"
     RunAsVirtualAccount = $true
     TranscriptDirectory = 'C:\Transcripts\'
     LanguageMode = "NoLanguage"
     SessionType = "RestrictedRemoteServer"
     Full = $true
     RoleDefinitions = @{
-        "home.lab\jea" = @{
+        "home.lab\jea_basic" = @{
             RoleCapabilities = "jea_basic"
         }
     }
@@ -60,24 +60,24 @@ Copy-Item -ToSession $session -path ".\jeamodule" -Recurse -Destination "C:\Prog
 # adding users can come before or after.
 invoke-command -VMname "DOMAIN-1" -Credential $credential.domainadmin {
     $group = @{
-        name = "jea"
-        SamAccountName = "jea"
-        displayname = "jea"
+        name = "jea_basic"
+        SamAccountName = "jea_basic"
+        displayname = "jea_basic"
         groupcategory = "Security"
         groupscope = "Global"
         path = "CN=Users,DC=home,DC=lab"
     }
     new-adgroup @group
-    Add-ADGroupMember -Members "bob.saget" -Identity "jea"
+    Add-ADGroupMember -Members "bob.saget" -Identity "jea_basic"
 }
 
 # apply the session configuration
 invoke-command $session {
-    Register-PSSessionConfiguration -path "C:\Program Files\WindowsPowerShell\Modules\jeamodule\jea.pssc" -name "jea"
+    Register-PSSessionConfiguration -path "C:\Program Files\WindowsPowerShell\Modules\jeamodule\jea_basic.pssc" -name "jea_basic"
 }
 
 # try remoting into it
-$jeasession = New-PSSession -ComputerName "SERVER-1" -Credential $credential.bob -ConfigurationName "jea"
+$jeasession = New-PSSession -ComputerName "SERVER-1" -Credential $credential.bob -ConfigurationName "jea_basic"
 $jeasession
 
 # jea includes a few commands by default

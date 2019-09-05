@@ -136,12 +136,12 @@ New-VMFromTemplate -name "SERVER-1" -vhdxpath "D:\hyperv\disks\" -vhdxtemplate "
 invoke-command -VMName "SERVER-1" -Credential $credential.localadmin {
     & "C:\windows\system32\sysprep\sysprep.exe" /generalize /shutdown /oobe
 }
+# if you sysprep, you'll have to reset the local admin password.
 # rename the computer
 invoke-command -VMName "SERVER-1" -Credential $credential.localadmin {
     #ipconfig /renew
     Rename-Computer -NewName "SERVER-1" -Restart
 }
-
 # join the domain
 invoke-command -VMName "SERVER-1" -Credential $credential.localadmin {
     Add-Computer -domainname "home.lab" -credential $using:credential.domainadmin -Restart
