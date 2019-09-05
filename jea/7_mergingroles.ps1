@@ -39,7 +39,7 @@ invoke-command $jea {
 }
 # the new commands won't show up until we re-establish the powershell session
 
-$jea = New-PSSession -ComputerName "SERVER-1" -Credential $credential.bob -ConfigurationName "jea_basic"
+$jea = New-PSSession -vmname "SERVER-1" -Credential $credential.bob -ConfigurationName "jea_basic"
 invoke-command $jea {
     get-command
 }
@@ -108,7 +108,7 @@ invoke-command $session {
     restart-service -name winrm
 }
 
-$jea = New-PSSession -ComputerName "SERVER-1" -Credential $credential.bob -ConfigurationName "jea_basic"
+$jea = New-PSSession -vmname "SERVER-1" -Credential $credential.bob -ConfigurationName "jea_basic"
 
 # the commands from two different roles are now available!
 invoke-command $jea {

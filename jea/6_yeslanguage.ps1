@@ -39,9 +39,9 @@ invoke-command $session {
 # you DO have to restart WinRM when you add or edit a session configuration.
 
 # let's try using some language again
-$jea = New-PSSession -ComputerName "SERVER-1" -Credential $credential.bob -ConfigurationName "jea_basic"
+$jea = New-PSSession -vmname "SERVER-1" -Credential $credential.bob -ConfigurationName "jea_basic"
 invoke-command $jea {
     if (1 + 1 -eq 2) {
-        get-service
+        get-service -name "WinRM"
     }
 }

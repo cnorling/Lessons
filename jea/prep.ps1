@@ -7,6 +7,67 @@ The core requirements for the demonstration are:
 All these virtual machines will be setup with hyper-v.
 #>
 
+function New-VMFromTemplate {
+    param (
+        [String]
+        $name,
+
+        [String]
+        $vhdxpath,
+
+        [String]
+        $vhdxtemplate,
+
+        [String]
+        $switch,
+        
+        [int]
+        $memory
+    )
+    ## verify you're running as admin
+    if ((New-Object Security.Principal.WindowsPrincipal ([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator) -eq $false) {
+        throw "you need to run as an administrator for this function to work"
+    }
+
+    ## verify vm doesn't exist already
+    if ((get-vm $name -ErrorAction SilentlyContinue)) {
+        throw "VM already exists"
+    }
+
+    ## verify template vhdx exists
+    if ((test-path $vhdxtemplate) -eq $false) {
+        throw "Target template hard drive is missing"
+    }
+
+    ## verify vhdx doesn't exist already
+    if ((test-path "$vhdxpath\$name.vhdx") -eq $true) {
+        throw "VHDX already exists."
+    }
+
+    # copy vhdx
+    copy-item -Path $vhdxtemplate -Destination "$vhdxpath\$name.vhdx"
+
+    # create new vm and mount vhdx
+    $param = @{
+        name = $name
+        memorystartupbytes = [int64]$memory * 1GB
+        vhdpath = "$vhdxpath\$name.vhdx"
+        switchname = $switch
+        generation = 2
+    }
+    $vm = new-vm @param
+
+    # set the boot order
+    $bootorder = @(
+        Get-VMHardDiskDrive -VM $vm
+        Get-VMNetworkAdapter $vm
+    )
+    Set-VMFirmware -VM $vm -BootOrder $bootorder
+
+    # start the vm
+    start-vm -Name $name
+}
+
 ## preemptive work
 $accounts = @{
     # create a credential object for your domain admin creds
@@ -33,7 +94,7 @@ $credential = @{
 
 ## setup DOMAIN-1
 # create the VM
-New-VMFromTemplate -name "DOMAIN-1" -vhdxpath "D:\hyperv\disks\" -vhdxtemplate "D:\hyperv\disks\template.vhdx" -switch "domain" -memory 1
+New-VMFromTemplate -name "DOMAIN-1" -vhdxpath "C:\hyperv\disks\" -vhdxtemplate "C:\hyperv\disks\2016-core-template.vhdx" -switch "domain" -memory 1
 
 # rename the computer and set a static IP address, and add some windowsfeatures
 Invoke-Command -VMname "DOMAIN-1"-Credential $credential.localadmin {
@@ -55,7 +116,7 @@ $param = @{
     norebootoncompletion = $false
     sysvolpath = "C:\Windows\SYSVOL"
     force = $true
-    safemodeadministratorpassword = $using:accounts.domainadmin.password
+    safemodeadministratorpassword = $accounts.domainadmin.password
 }
 Invoke-Command -VMname "DOMAIN-1" -Credential $credential.localadmin {
     Install-ADDSForest @using:param
@@ -66,7 +127,7 @@ Invoke-Command -VMname "DOMAIN-1" -Credential $credential.domainadmin {
     Add-DnsServerPrimaryZone -NetworkID 10.10.10.0/24 -ZoneFile "10.10.10.10.in-addr.arpa.dns"
     Add-DnsServerForwarder -IPAddress 8.8.8.8 -PassThru
     netsh dhcp add securitygroups
-    Add-DHCPServerv4Scope -Name “Employee Scope” -StartRange 10.10.10.10 -EndRange 10.10.10.254 -SubnetMask 255.255.255.0 -State Active -LeaseDuration 1.00:00:00
+    Add-DHCPServerv4Scope -Name "Employee Scope" -StartRange 10.10.10.10 -EndRange 10.10.10.254 -SubnetMask 255.255.255.0 -State Active -LeaseDuration 1.00:00:00
     Set-DHCPServerv4OptionValue -ScopeID 10.10.10.0 -DnsDomain home.lab -DnsServer 10.10.10.10 -Router 10.10.10.1
     Add-DhcpServerInDC -DnsName "home.lab" -IpAddress 10.10.10.10
 }
@@ -89,7 +150,7 @@ invoke-command -VMname "DOMAIN-1" -Credential $credential.domainadmin {
 
 ## setup SERVER-1
 # create the VM
-New-VMFromTemplate -name "SERVER-1" -vhdxpath "D:\hyperv\disks\" -vhdxtemplate "D:\hyperv\disks\2016-core-template.vhdx" -switch "domain" -memory 3
+New-VMFromTemplate -name "SERVER-1" -vhdxpath "C:\hyperv\disks\" -vhdxtemplate "C:\hyperv\disks\2016-core-template.vhdx" -switch "domain" -memory 2
 
 # sysprep to generate a new sid
 invoke-command -VMName "SERVER-1" -Credential $credential.localadmin {

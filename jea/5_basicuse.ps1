@@ -77,7 +77,7 @@ invoke-command $session {
 }
 
 # try remoting into it
-$jea = New-PSSession -ComputerName "SERVER-1" -Credential $credential.bob -ConfigurationName "jea_basic"
+$jea = New-PSSession -vmname "SERVER-1" -Credential $credential.bob -ConfigurationName "jea_basic"
 $jea
 
 # jea includes a few commands by default

@@ -42,7 +42,7 @@ invoke-command $session {
     restart-service -name winrm
 }
 
-$jea = New-PSSession -ComputerName "SERVER-1" -Credential $credential.bob -ConfigurationName "jea_basic"
+$jea = New-PSSession -vmname "SERVER-1" -Credential $credential.bob -ConfigurationName "jea_basic"
 invoke-command $jea {
     $env:username
 }
