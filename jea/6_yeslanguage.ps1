@@ -1,10 +1,10 @@
 # you can use the pipeline even in no language mode
-invoke-command $jeasession {
+invoke-command $jea {
     get-service bits | restart-service
 }
 
 # but you can't use language like IF/ELSE/TRY/CATCH/FINALLY
-invoke-command $jeasession {
+invoke-command $jea {
     if (1 + 1 -eq 2) {
         get-service
     }
@@ -39,8 +39,8 @@ invoke-command $session {
 # you DO have to restart WinRM when you add or edit a session configuration.
 
 # let's try using some language again
-$jeasession = New-PSSession -ComputerName "SERVER-1" -Credential $credential.bob -ConfigurationName "jea_basic"
-invoke-command $jeasession {
+$jea = New-PSSession -ComputerName "SERVER-1" -Credential $credential.bob -ConfigurationName "jea_basic"
+invoke-command $jea {
     if (1 + 1 -eq 2) {
         get-service
     }

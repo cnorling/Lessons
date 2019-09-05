@@ -2,7 +2,6 @@
 this document is used to prepare a lab environment to demonstrate JEA's capabilities. 
 The core requirements for the demonstration are:
 * A domain controller
-* A source server
 * A destination server
 
 All these virtual machines will be setup with hyper-v.
@@ -80,52 +79,12 @@ $user = @{
     accountpassword = $accounts.bob.password
     enabled = $true
     path = "CN=Users,DC=home,DC=lab"
-    changepasswordatlogon:
+    changepasswordatlogon = $false
 }
-$groups = @(
-    @{
-        name = "jea_basic"
-        SamAccountName = "jea_basic"
-        displayname = "jea_basic"
-        groupcategory = "Security"
-        groupscope = "Global"
-        path = "CN=Users,DC=home,DC=lab"
-    }
-    @{
-        name = "jea_yeslanguage"
-        SamAccountName = "jea_yeslanguage"
-        displayname = "jea_yeslanguage"
-        groupcategory = "Security"
-        groupscope = "Global"
-        path = "CN=Users,DC=home,DC=lab"
-    }
-    @{
-        name = "jea_asgmsa"
-        SamAccountName = "jea_asgmsa"
-        displayname = "jea_asgmsa"
-        groupcategory = "Security"
-        groupscope = "Global"
-        path = "CN=Users,DC=home,DC=lab"
-    }
-)
 
-$gmsa = @{
-    name = "JEA_GMSA"
-    dnshostname = "JEA_GMSA.home.lab"
-}
 invoke-command -VMname "DOMAIN-1" -Credential $credential.domainadmin {
     Add-KdsRootKey –EffectiveTime ((get-date).addhours(-10))
     New-ADUser @using:user
-    New-ADServiceAccount @using:gmsa
-    foreach ($group in $using:groups) {
-        new-adgroup @group
-    }
-}
-
-# create an SMB share 
-invoke-command -VMName "SERVER-1" -Credential $credential.localadmin {
-    mkdir C:\smbshare
-    New-SmbShare -name "JEASmbShare" -path "C:\smbshare" -FullAccess "home.lab\JEA_GMSA"
 }
 
 ## setup SERVER-1
@@ -139,7 +98,6 @@ invoke-command -VMName "SERVER-1" -Credential $credential.localadmin {
 # if you sysprep, you'll have to reset the local admin password.
 # rename the computer
 invoke-command -VMName "SERVER-1" -Credential $credential.localadmin {
-    #ipconfig /renew
     Rename-Computer -NewName "SERVER-1" -Restart
 }
 # join the domain

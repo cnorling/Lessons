@@ -34,13 +34,13 @@ New-PSSessionConfigurationFile @pssc
 # copy the new role and session out
 Copy-Item -ToSession $session -path ".\jeamodule\jea_basic.pssc" -Destination "C:\Program Files\WindowsPowerShell\Modules\jeamodule\jea_basic.pssc" -Force
 Copy-Item -ToSession $session -path ".\jeamodule\rolecapabilities\jea_advanced.psrc" -Destination "C:\Program Files\WindowsPowerShell\Modules\jeamodule\rolecapabilities\jea_advanced.psrc" -Force
-invoke-command $jeasession {
+invoke-command $jea {
     get-command
 }
 # the new commands won't show up until we re-establish the powershell session
 
-$jeasession = New-PSSession -ComputerName "SERVER-1" -Credential $credential.bob -ConfigurationName "jea_basic"
-invoke-command $jeasession {
+$jea = New-PSSession -ComputerName "SERVER-1" -Credential $credential.bob -ConfigurationName "jea_basic"
+invoke-command $jea {
     get-command
 }
 
@@ -108,9 +108,9 @@ invoke-command $session {
     restart-service -name winrm
 }
 
-$jeasession = New-PSSession -ComputerName "SERVER-1" -Credential $credential.bob -ConfigurationName "jea_basic"
+$jea = New-PSSession -ComputerName "SERVER-1" -Credential $credential.bob -ConfigurationName "jea_basic"
 
 # the commands from two different roles are now available!
-invoke-command $jeasession {
+invoke-command $jea {
     get-command
 }

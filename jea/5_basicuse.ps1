@@ -56,7 +56,7 @@ New-PSSessionConfigurationFile @pssc
 $session = New-PSSession -VMName "SERVER-1" -Credential $credential.domainadmin
 Copy-Item -ToSession $session -path ".\jeamodule" -Recurse -Destination "C:\Program Files\WindowsPowerShell\Modules\jeamodule" -Force
 
-# create a group you reference BEFORE you apply the session configuration
+# create the group BEFORE you apply the session configuration
 # adding users can come before or after.
 invoke-command -VMname "DOMAIN-1" -Credential $credential.domainadmin {
     $group = @{
@@ -77,20 +77,20 @@ invoke-command $session {
 }
 
 # try remoting into it
-$jeasession = New-PSSession -ComputerName "SERVER-1" -Credential $credential.bob -ConfigurationName "jea_basic"
-$jeasession
+$jea = New-PSSession -ComputerName "SERVER-1" -Credential $credential.bob -ConfigurationName "jea_basic"
+$jea
 
 # jea includes a few commands by default
-invoke-command $jeasession {
+invoke-command $jea {
     get-command
 }
 
 # using a command outside your role returns this:
-invoke-command $jeasession {
+invoke-command $jea {
     Add-LocalGroupMember -Group "administrator" -Member "home.lab\bob.saget"
 }
 
 # using a parameter or value outside your role looks like this:
-invoke-command $jeasession {
+invoke-command $jea {
     get-service -name "bits" -Include "WinRM"
 }

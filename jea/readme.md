@@ -1,50 +1,5 @@
 # Pissing everyone off with JEA *(Just Enough Administration)*
 
-## Subjects
-* What is JEA
-* 
-
-
-what is jea
-    acronym
-what are some use cases
-    When your CISO is pissed off and hates powershell, you can offer JEA as an alternative to please C levels
-    when you have a task that needs local admin but you're worried about security
-    root of it is it's a security utility.
-    powershell is used in a large number of malicious attacks today. Using JEA can give you better posture to deal with these kinds of threats.
-What are some prerequisites to working with JEA?
-    basic psremoting knowledge
-    basic module creation knowledge
-how does it work
-    get into how pssessions work
-    show pre-registered pssession configurations    
-what cmdlets do you use to manage JEA
-    get-pssessionconfiguration
-    register-pssessionconfiugration
-    new-psrolecapabilityfile
-    enter-pssession
-Define a role
-    manually creating the file
-    splatting
-create a powershell module
-    create the root folder
-    create the psd1
-    create the psm1
-    create the keyword folder
-    add the pssessionconfiguration file to the keyword folder
-Create a session configuration
-    create it
-    associate it with the role
-Common mistakes
-    defining a cmdlet as a role or vice versa
-Apply the session configuration to a computer
-    move the new module over to the computer you want to manage
-    call register-pssessionconfiguration
-A practical example of how I use it in my environment
-    With DSC to issue certificates and call update-dscconfiguration
-people not tools
-    tools can use JEA just as much as people can. If you have a sensitive cronjob that reaches out to other servers, consider using JEA to make it more secure.
-
 ## FAQ
 
 ### What is JEA?
@@ -53,28 +8,25 @@ JEA is short for Just Enough Administration. It is a utility to administer who c
 ### What are some use-cases for JEA?
 * You want to give someone limited administrative access to a server or servers.
 * You want to assign roles to users and give them the tools they need to do their jobs.
-* You want to limit what a user can do with powershell under an administrative context.
+* You want to limit what a user can do with remote powershell sessions under an administrative context.
 
 ### How hard is it to setup JEA?
 Honestly, setting up JEA is preetty easy. Configuring what commands a person can run under what roles is what takes the most time.
 
-### What ports and protocols does JEA use?
-JEA uses the same ports as WinRM (5985,5986)
-
 ### File extensions?
 There are a couple powershell files that are used for JEA.
+
 |Extension|Name|Purpose|
+|---------|----|-------|
 |.psrc|PS Role Capability|Creates "Roles" that decide what commands a user can use|
 |.pssc|PS Session Config|Creates the session the user connects to|
-
-### How do I use it?
 
 ### How do I use it in scale?
 Tools like DSC (Desired State Configuration) can help you deploy configurations and sessions, but DSC is not needed.
 The core requirements for deploying JEA are as follows:
 
 #### Have some means to create session configurations on the computers you want to manage with JEA
-This can be something like a payload added to a VMware template/base image on a virtual machine. It can also be an element in your CI|CD pipeline. Remember that you can create a PSsession configuration off domain, but you need to be on domain to associate those session configurations with a domain user or group.
+This can be something like a payload added to a VMware template/base image on a virtual machine. It can also be an element in your CI|CD pipeline. Remember that you can create a PSSC off domain, but you need to be on domain to associate those session configurations with a domain user or group.
 
 #### Have some means to distribute and update powershell modules to the computers you want to manage with JEA
 This step is more complicated. You can add a payload just like the previous step, but you need a way to update, add, and remove the role capabilities. Publishing your modules to a nuget feed (think the powershell gallery)can make it easier to distribute packages, but it banks off of you already having something like that in your environment. Keeping the roles up-to-date and consistent is just as important as first time setup is. If you don't have a way to quickly make changes to roles everywhere, your developers and system administrators are going to hate you.
