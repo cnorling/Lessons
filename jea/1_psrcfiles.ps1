@@ -2,14 +2,15 @@
 PSRC files, short for Powershell Role Capabilities are what you use to define what functions,
 cmdlets, providers, and aliases as user has access to when they use JEA. 
 This page goes over how to generate these files, and each parameter's function.
+PSRC files are the WHAT and PSSC files are the WHO
 
 Microsoft's documentation on this subject is excellent and worth a read:
 https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/new-psrolecapabilityfile?view=powershell-5.1
 #>
 
 # start by creating a pssessionconfiguration file, then edit it.
-New-PSRoleCapabilityFile -Path ".\manualrole.psrc"
-code ".\manualrole.psrc"
+New-PSRoleCapabilityFile -Path ".\bin\manualrole.psrc"
+code ".\bin\manualrole.psrc"
 
 <#
 Most of the below items all accept an array of hashtables, or an array of strings unless otherwise noted.
@@ -62,7 +63,7 @@ AssembliesToLoad
 
 # a better way is to define the role, then create the file by splatting.
 $roleparameters = @{
-    path = ".\splatrole.psrc"
+    path = ".\bin\splatrole.psrc"
     visiblefunctions = @(
         
     )
@@ -84,4 +85,4 @@ $roleparameters = @{
     )
 }
 New-PSRoleCapabilityFile @roleparameters
-code ".\splatrole.psrc"
+code ".\bin\splatrole.psrc"

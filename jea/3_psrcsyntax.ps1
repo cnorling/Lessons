@@ -65,7 +65,8 @@ code ".\syntax.psrc"
 <#
 You can get even MORE granular and administrate what values you can supply to each parameter.
 To do this, you supply a hashtable for each parameter that you want to administrate.
-The syntax is almost exactly the same as the layer above it.
+Include a key called "name" and a value of either "validateset" or "validatepattern"
+You can also do both. The syntax is almost exactly the same as the layer above it.
 
 name
     The name of the parameter you are administrating
@@ -74,7 +75,7 @@ validatepattern
 #>
 
 $param = @{
-    path = ".\syntax.psrc"
+    path = ".\bin\syntax.psrc"
     visiblefunctions = @(
         "set-disk"
     )
@@ -82,14 +83,17 @@ $param = @{
         @{
             name = "get-service"
             parameters = @(
-                "include"
-                "exclude"
                 @{
                     name = "name"
+                    validateset = @(
+                        "WinRM"
+                        "BITS"
+                    )
                     validatepattern = @(
-                        'winmgmt'
-                        'winrm'
-                        'spooler'
+                        'B*'
+                        'A*'
+                        'C*'
+                        '(Q*)|(R*)|(S*)'
                     )
                 }
             )
@@ -101,4 +105,30 @@ $param = @{
 }
 
 New-PSRoleCapabilityFile @param
-code ".\syntax.psrc"
+code ".\bin\syntax.psrc"
+
+
+# when you get granular, these files get LONG. A single parameter can take up 30 lines of code!
+# There is a way to shrink it down, but it violates community formatting rules.
+# most of the community does them this way:
+$param = @{
+    path = ".\bin\syntax.psrc"
+    visiblefunctions = @(
+        "set-disk"
+    )
+    visiblecmdlets = @(
+        @{
+            name = "get-service"
+            parameters = @(
+                @{name = "name"; validateset = "WinRM","BITS"; validatepattern = 'B*','A*','C*','(Q*)|(R*)|(S*)'}
+                @{name = "exclude"; validatepattern = 'appmgmt'}
+            )
+        }
+        "start-service"
+        "stop-service"
+        "restart-service"
+    )
+}
+
+New-PSRoleCapabilityFile @param
+code ".\bin\syntax.psrc"

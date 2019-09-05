@@ -80,15 +80,35 @@ $user = @{
     accountpassword = $accounts.bob.password
     enabled = $true
     path = "CN=Users,DC=home,DC=lab"
+    changepasswordatlogon:
 }
-$group = @{
-    name = "JEA_Group"
-    SamAccountName = "JEA_Group"
-    displayname = "JEA_Group"
-    groupcategory = "Security"
-    groupscope = "Global"
-    path = "CN=Users,DC=home,DC=lab"
-}
+$groups = @(
+    @{
+        name = "jea_basic"
+        SamAccountName = "jea_basic"
+        displayname = "jea_basic"
+        groupcategory = "Security"
+        groupscope = "Global"
+        path = "CN=Users,DC=home,DC=lab"
+    }
+    @{
+        name = "jea_yeslanguage"
+        SamAccountName = "jea_yeslanguage"
+        displayname = "jea_yeslanguage"
+        groupcategory = "Security"
+        groupscope = "Global"
+        path = "CN=Users,DC=home,DC=lab"
+    }
+    @{
+        name = "jea_asgmsa"
+        SamAccountName = "jea_asgmsa"
+        displayname = "jea_asgmsa"
+        groupcategory = "Security"
+        groupscope = "Global"
+        path = "CN=Users,DC=home,DC=lab"
+    }
+)
+
 $gmsa = @{
     name = "JEA_GMSA"
     dnshostname = "JEA_GMSA.home.lab"
@@ -96,39 +116,33 @@ $gmsa = @{
 invoke-command -VMname "DOMAIN-1" -Credential $credential.domainadmin {
     Add-KdsRootKey –EffectiveTime ((get-date).addhours(-10))
     New-ADUser @using:user
-    New-ADGroup @using:group
     New-ADServiceAccount @using:gmsa
+    foreach ($group in $using:groups) {
+        new-adgroup @group
+    }
+}
+
+# create an SMB share 
+invoke-command -VMName "SERVER-1" -Credential $credential.localadmin {
+    mkdir C:\smbshare
+    New-SmbShare -name "JEASmbShare" -path "C:\smbshare" -FullAccess "home.lab\JEA_GMSA"
 }
 
 ## setup SERVER-1
 # create the VM
-New-VMFromTemplate -name "SERVER-1" -vhdxpath "D:\hyperv\disks\" -vhdxtemplate "D:\hyperv\disks\template.vhdx" -switch "domain" -memory 3
+New-VMFromTemplate -name "SERVER-1" -vhdxpath "D:\hyperv\disks\" -vhdxtemplate "D:\hyperv\disks\2016-core-template.vhdx" -switch "domain" -memory 3
 
 # sysprep to generate a new sid
 invoke-command -VMName "SERVER-1" -Credential $credential.localadmin {
     & "C:\windows\system32\sysprep\sysprep.exe" /generalize /shutdown /oobe
 }
-# rename the computer and set a static IP
+# rename the computer
 invoke-command -VMName "SERVER-1" -Credential $credential.localadmin {
     #ipconfig /renew
-    Rename-Computer -NewName "SERVER-1" 
-    Add-Computer -domainname "home.lab" -credential $using:credential.domainadmin
-    Restart-Computer
+    Rename-Computer -NewName "SERVER-1" -Restart
 }
 
-## setup SERVER-2
-# create the VM
-New-VMFromTemplate -name "SERVER-1" -vhdxpath "D:\hyperv\disks\" -vhdxtemplate "D:\hyperv\disks\template.vhdx" -switch "domain" -memory 3
-
-# sysprep to generate a new sid
+# join the domain
 invoke-command -VMName "SERVER-1" -Credential $credential.localadmin {
-    & "C:\windows\system32\sysprep\sysprep.exe" /generalize /shutdown /oobe
-}
-
-# rename the computer and set a static IP
-invoke-command -VMName "SERVER-1" -Credential $credential.localadmin {
-    #ipconfig /renew
-    Rename-Computer -NewName "SERVER-1" 
-    Add-Computer -domainname "home.lab" -credential $using:credential.domainadmin
-    Restart-Computer
+    Add-Computer -domainname "home.lab" -credential $using:credential.domainadmin -Restart
 }

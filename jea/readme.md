@@ -15,7 +15,6 @@ what are some use cases
 What are some prerequisites to working with JEA?
     basic psremoting knowledge
     basic module creation knowledge
-    splatting
 how does it work
     get into how pssessions work
     show pre-registered pssession configurations    

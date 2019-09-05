@@ -2,14 +2,15 @@
 PSSC files, short for Powershell Session Configuration files are what you use to create an endpoint you
 can remote into with powershell. They allow you to associate users and groups with the PSRC roles you 
 create as well as a few other settings. This page goes over how to generate these files, and each parameter's function.
+PSRC files are the WHAT and PSSC files are the WHO
 
 Microsoft's documentation on this subject is excellent and worth a read:
 https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/new-pssessionconfigurationfile?view=powershell-5.1
 #>
 
 # start by creating a pssessionconfiguration file.
-New-PSSessionConfigurationFile -Path .\sessionconfiguration.pssc
-code .\sessionconfiguration.pssc
+New-PSSessionConfigurationFile -Path .\bin\sessionconfiguration.pssc
+code .\bin\sessionconfiguration.pssc
 
 <#
 TranscriptDirectory
@@ -28,8 +29,8 @@ RoleDefinitions
 #>
 
 #You can also get more advanced options by running this:
-New-PSSessionConfigurationFile -Path .\fullsessionconfiguration.pssc -Full
-code .\fullsessionconfiguration.pssc
+New-PSSessionConfigurationFile -Path .\bin\fullsessionconfiguration.pssc -Full
+code .\bin\fullsessionconfiguration.pssc
 
 <#
 RunAsVirtualAccountGroups
@@ -56,6 +57,7 @@ RequiredGroups
 
 LanguageMode
     lets you set the languagemode for your session. The default mode is NO LANGUAGE
+    When you're using operators like -lt, -gt, eq, .where(), etc... you are using language.
     https://devblogs.microsoft.com/powershell/powershell-constrained-language-mode/
     https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_language_modes?view=powershell-5.1
 
@@ -83,6 +85,6 @@ roles definied in the session configuration.
 #>
 
 # You can also test PSSC files by running Test-PSSessionConfigurationFile
-Test-PSSessionConfigurationFile -path .\botchedsessionconfiguration.pssc
+Test-PSSessionConfigurationFile -path .\bin\botchedsessionconfiguration.pssc
 
 # After you've used a PSSC file, you can delete it with no consequence.
