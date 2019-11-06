@@ -6,8 +6,9 @@ DSC keywords
 How it works
 Considerations before use
 creating custom moules
-working with configurationdata
+dsc in the real world
 
+Section 0: Preparing a computer for DSC
 Section 1: Basic static configuration 
 Section 2: Basic multi-server configuration
 Section 3: Multi-server configuration with configurationdata
@@ -65,3 +66,6 @@ Starting with DSC is pretty simple. You write a powershell script that generates
 * How will you distribute and update custom and external DSC resources?
 * How will you make sure a pull server (if you elect to use one) stays secure?
 * How do you ensure that incorrect data stays out of MOFs?
+
+# DSC in the real world
+DSC is an engine native to windows that can fill a lot of configuration management needs.
