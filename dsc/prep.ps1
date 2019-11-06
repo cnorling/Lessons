@@ -77,6 +77,7 @@ invoke-command -VMName "SERVER-1" -Credential $credential.localadmin {
 # if you sysprep, you'll have to reset the local admin password.
 # rename the computer
 invoke-command -VMName "SERVER-1" -Credential $credential.localadmin {
+    mkdir 'C:\mofs'
     Rename-Computer -NewName "SERVER-1" -Restart
 }
 # join the domain
