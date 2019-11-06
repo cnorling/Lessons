@@ -4,8 +4,6 @@ $cdata = @{
         @{
             nodename = "SERVER-1"
             roles = @(
-                "domaincontroller"
-                "dns"
                 "dhcp"
             )
         }
@@ -28,29 +26,34 @@ configuration withrolelogic {
     
     Import-DscResource -ModuleName 'PSDesiredStateConfiguration'
 
-    # domain controller role
-    node $allnodes.where({$_.roles -contains "domaincontroller"}).nodename {
-
-    }
-
-    # dns role
-    node $allnodes.where({$_.roles -contains "dns"}).nodename {
-
-    }
-
     # dhcp role
     node $allnodes.where({$_.roles -contains "dhcp"}).nodename {
-
+        windowsfeature dhcp {
+            ensure      = present
+            name        = dhcp
+        }
     }
 
     # pki role
     node $allnodes.where({$_.roles -contains "pki"}).nodename {
-
+        windowsfeature pki {
+            ensure      = Present
+            name        = pki
+        }
     }
 
     # webserver role
     node $allnodes.where({$_.roles -contains "webserver"}).nodename {
+        windowsfeature iis {
+            ensure      = present
+            name        = web-server
+        }
 
+        environment website {
+            Ensure      = Present
+            Name        = ASPNETCORE_ENVIRONMENT
+            Value       = Production
+        }
     }
 }
 withrolelogic -outputpath .\ -configurationdata $cdata
