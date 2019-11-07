@@ -5,13 +5,14 @@ configuration LCMConfig
     Node 'SERVER-1' {
         Settings {
             RefreshMode = 'Push'
+            ConfigurationMode = 'applyandautocorrect'
         }
     }
 }
 lcmconfig -outputpath .\
 
 # create pssession with target node
-New-PSSession -VMName 'SERVER-1' -Credential $credential.domainadmin
+$session = New-PSSession -VMName 'SERVER-1' -Credential $credential.domainadmin
 
 # get current lcm configuration
 Invoke-Command $session {

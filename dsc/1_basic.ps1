@@ -4,7 +4,8 @@ configuration basic {
     Import-DscResource -ModuleName 'PSDesiredStateConfiguration'
 
     node 'SERVER-1' {
-        WindowsFeature RSAT {
+        WindowsFeature RSAT 
+        {
             ensure  = "present"
             name    = "RSAT-AD-TOOLS"
         }
@@ -17,7 +18,7 @@ copy-item -ToSession $session -Path ".\SERVER-1.mof" -Destination C:\mofs\
 
 # call start-dscconfiguration to see what it does
 Invoke-Command $session {
-    Start-DscConfiguration -Wait -Verbose
+    Start-DscConfiguration -Wait -Verbose -Path C:\mofs
 }
 
 # purposely break the configuration and see what dsc does

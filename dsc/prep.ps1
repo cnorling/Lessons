@@ -88,7 +88,7 @@ function New-VMFromTemplate {
 
 ## setup DOMAIN-1
 # create the VM
-New-VMFromTemplate -name "DOMAIN-1" -vhdxpath "D:\hyperv\disks\" -vhdxtemplate "D:\hyperv\disks\template.vhdx" -switch "domain" -memory 1
+New-VMFromTemplate -name "DOMAIN-1" -vhdxpath "D:\hyperv\disks\" -vhdxtemplate "D:\hyperv\disks\2016-core-template.vhdx" -switch "domain" -memory 1
 
 # rename the computer and set a static IP address, and add some windowsfeatures
 Invoke-Command -VMname "DOMAIN-1"-Credential $credential.localadmin {
@@ -110,7 +110,7 @@ $param = @{
     norebootoncompletion = $false
     sysvolpath = "C:\Windows\SYSVOL"
     force = $true
-    safemodeadministratorpassword = $using:accounts.domainadmin.password
+    safemodeadministratorpassword = $credential.domainadmin.password
 }
 Invoke-Command -VMname "DOMAIN-1" -Credential $credential.localadmin {
     Install-ADDSForest @using:param

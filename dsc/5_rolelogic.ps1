@@ -28,31 +28,35 @@ configuration withrolelogic {
 
     # dhcp role
     node $allnodes.where({$_.roles -contains "dhcp"}).nodename {
-        windowsfeature dhcp {
-            ensure      = present
-            name        = dhcp
+        windowsfeature dhcp 
+        {
+            ensure      = 'present'
+            name        = 'dhcp'
         }
     }
 
     # pki role
     node $allnodes.where({$_.roles -contains "pki"}).nodename {
-        windowsfeature pki {
-            ensure      = Present
-            name        = pki
+        windowsfeature pki 
+        {
+            ensure      = 'Present'
+            name        = 'pki'
         }
     }
 
     # webserver role
     node $allnodes.where({$_.roles -contains "webserver"}).nodename {
-        windowsfeature iis {
-            ensure      = present
-            name        = web-server
+        windowsfeature iis 
+        {
+            ensure      = 'present'
+            name        = 'web-server'
         }
 
-        environment website {
-            Ensure      = Present
-            Name        = ASPNETCORE_ENVIRONMENT
-            Value       = Production
+        environment website 
+        {
+            Ensure      = 'Present'
+            Name        = 'ASPNETCORE_ENVIRONMENT'
+            Value       = 'Production'
         }
     }
 }

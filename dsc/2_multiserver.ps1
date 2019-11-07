@@ -4,21 +4,24 @@ configuration multiserver {
     Import-DscResource -ModuleName 'PSDesiredStateConfiguration'
 
     node 'SERVER-1' {
-        WindowsFeature RSAT {
+        WindowsFeature RSAT 
+        {
             ensure  = "present"
             name    = "RSAT-AD-TOOLS"
         }
     }
 
     node 'SERVER-2' {
-        WindowsFeature RSAT {
+        WindowsFeature RSAT 
+        {
             ensure  = "present"
             name    = "RSAT-AD-TOOLS"
         }
     }
 
     node 'SERVER-3' {
-        WindowsFeature RSAT {
+        WindowsFeature RSAT 
+        {
             ensure  = "present"
             name    = "RSAT-AD-TOOLS"
         }

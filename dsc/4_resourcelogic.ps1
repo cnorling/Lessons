@@ -21,7 +21,8 @@ configuration withlogic {
     Import-DscResource -ModuleName 'PSDesiredStateConfiguration'
 
     node $allnodes.nodename {
-        WindowsFeature RSAT {
+        WindowsFeature RSAT 
+        {
             ensure  = "present"
             name    = $node.windowsfeature
         }
