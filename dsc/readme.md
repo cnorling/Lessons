@@ -1,19 +1,19 @@
 # Using Desired State Configuration
 
 # Lesson Agenda
-Learning about DSC
-DSC keywords
-How it works
-Considerations before use
-creating custom moules
-dsc in the real world
-
-Section 0: Preparing a computer for DSC
-Section 1: Basic static configuration 
-Section 2: Basic multi-server configuration
-Section 3: Multi-server configuration with configurationdata
-Section 4: Multi-server configuration with logic applied to DSC resources
-Section 5: Multi-server configuration with logic applied to roles
+* Learning about DSC
+* DSC keywords
+* How it works
+* Considerations before use
+* dsc in the real world
+* Section 0: Preparing a computer for DSC
+* Section 1: Basic static configuration 
+* Section 2: Basic multi-server configuration
+* Section 3: Multi-server configuration with configurationdata
+* Section 4: Multi-server configuration with logic applied to DSC resources
+* Section 5: Multi-server configuration with logic applied to roles
+* Section 6: The actual scripts
+* Section 7: credentials inside DSC
 
 # Learning about DSC
 ## What is dsc
@@ -39,6 +39,7 @@ DSC is like a really odd-shaped tool. It is certainly not always the perfect fit
     * The LCM is not open source yet, but this will change in the future
 * Reporting and analytics are more cumbersome and designed to be consumed by other logging products
 * You have less options for scheduled deployments
+* it is essentially an engine. If you can build the rest of the car, or have everything but the engine in an existing car, or hell you want two engines or something then DSC may be a good fit.
 
 # DSC keywords
 |Keyword/*Abbreviation*|Explanation|
@@ -68,4 +69,35 @@ Starting with DSC is pretty simple. You write a powershell script that generates
 * How do you ensure that incorrect data stays out of MOFs?
 
 # DSC in the real world
-DSC is an engine native to windows that can fill a lot of configuration management needs.
+People usually don't use a push configuration. most people use a pull server. It makes sense why. You get a lot of benefit when you use a pull server. A lot of the previous questions on setup are addressed when you use one. Your pull server becomes the one source for all your configurations.
+Products like Puppet and ansible will also use DSC resources to bring a node closer to its desired state.
+
+# Configuring the LCM
+The LCM is ready to go without changing any settings, but there may be some settings you want to change. Think things like how frequently to apply a configuration.
+It's pretty much the same process you would use to apply a DSC configuration.
+
+# Basic, static configurations
+We'll start with some basic, easier to read configurations that give you a good picture of what DSC does.
+We start by declaring a configuration just like you would a function.
+Then you declare what modules with DSC resources you want to use
+Then we declare what configurations apply to what computers
+then we declare the parameter values
+Running this script creates a file that we can copy to a target computer.
+Any meddling will be automatically corrected
+
+# Basic, multi-server configurations
+You can configure more than one server inside a DSC configuration.
+There are some problems with this model
+* it's not scalable
+* you're more prone to typos and incorrect/inconsistent data
+
+# Configurations with configurationdata
+DSC has some builtin logic for ingesting and distributing data. the principle is that there are two layers of data. Node generic and node specific. Node specific data will always overwrite node generic data.
+
+# Resources with logical separation
+Having special nodes with special settings is inevitable. You need a way to handle these special computers, or in this case supply data that is different depending on who is using it.
+
+We can do better than this though if we logically separate the DSC resources into chunks or roles that each node can opt into, then supply a combination of node generic and node specific data to each role.
+
+# Where's the powershell though?
+Some of you are probably thinking where's the actual powershell? This is just an abstraction.

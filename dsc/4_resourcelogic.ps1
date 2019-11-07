@@ -2,12 +2,14 @@
 $cdata = @{
     allnodes = @(
         @{
-            nodename = "SERVER-1"
+            nodename = '*'
             windowsfeature = "RSAT-AD-TOOLS"
         }
         @{
+            nodename = "SERVER-1"
+        }
+        @{
             nodename = "SERVER-2"
-            windowsfeature = "RSAT-AD-TOOLS"
         }
         @{
             nodename = "SERVER-3"

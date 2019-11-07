@@ -4,6 +4,10 @@
 $cdata = @{
     allnodes = @(
         @{
+            nodename = "*"
+            windowsfeature = "RSAT-AD-TOOLS"
+        }
+        @{
             nodename = "SERVER-1"
         }
         @{
@@ -23,7 +27,7 @@ configuration withcdata {
         WindowsFeature RSAT 
         {
             ensure  = "present"
-            name    = "RSAT-AD-TOOLS"
+            name    = $node.windowsfeature
         }
     }
 }
