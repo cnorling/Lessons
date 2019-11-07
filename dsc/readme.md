@@ -72,6 +72,8 @@ Starting with DSC is pretty simple. You write a powershell script that generates
 People usually don't use a push configuration. most people use a pull server. It makes sense why. You get a lot of benefit when you use a pull server. A lot of the previous questions on setup are addressed when you use one. Your pull server becomes the one source for all your configurations.
 Products like Puppet and ansible will also use DSC resources to bring a node closer to its desired state.
 
+DSC's itempotency isn't a golden ticket though. It doesn't prevent incorrect data from poisoning your configurations, and it doesn't prevent honest human error. Human error will always exist in the configuration management or any workflow in IT. The conversation is usually "how do we keep people from screwing up or get them to screw up less" when the conversation should be "how do we quickly and easily fix screw-ups?" DSC does an excellent job of answering the second question.
+
 # Configuring the LCM
 The LCM is ready to go without changing any settings, but there may be some settings you want to change. Think things like how frequently to apply a configuration.
 It's pretty much the same process you would use to apply a DSC configuration.
