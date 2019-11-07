@@ -23,7 +23,6 @@ $accounts = @{
 $credential = @{
     domainadmin = new-object pscredential -argumentlist $accounts.domainadmin.username,$accounts.domainadmin.password
     localadmin = new-object pscredential -argumentlist $accounts.localadmin.username,$accounts.localadmin.password
-    bob = new-object pscredential -argumentlist $accounts.bob.username,$accounts.bob.password
 }
 
 function New-VMFromTemplate {
