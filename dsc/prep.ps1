@@ -26,6 +26,67 @@ $credential = @{
     bob = new-object pscredential -argumentlist $accounts.bob.username,$accounts.bob.password
 }
 
+function New-VMFromTemplate {
+    param (
+        [String]
+        $name,
+
+        [String]
+        $vhdxpath,
+
+        [String]
+        $vhdxtemplate,
+
+        [String]
+        $switch,
+        
+        [int]
+        $memory
+    )
+    ## verify you're running as admin
+    if ((New-Object Security.Principal.WindowsPrincipal ([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator) -eq $false) {
+        throw "you need to run as an administrator for this function to work"
+    }
+
+    ## verify vm doesn't exist already
+    if ((get-vm $name -ErrorAction SilentlyContinue)) {
+        throw "VM already exists"
+    }
+
+    ## verify template vhdx exists
+    if ((test-path $vhdxtemplate) -eq $false) {
+        throw "Target template hard drive is missing"
+    }
+
+    ## verify vhdx doesn't exist already
+    if ((test-path "$vhdxpath\$name.vhdx") -eq $true) {
+        throw "VHDX already exists."
+    }
+
+    # copy vhdx
+    copy-item -Path $vhdxtemplate -Destination "$vhdxpath\$name.vhdx"
+
+    # create new vm and mount vhdx
+    $param = @{
+        name = $name
+        memorystartupbytes = [int64]$memory * 1GB
+        vhdpath = "$vhdxpath\$name.vhdx"
+        switchname = $switch
+        generation = 2
+    }
+    $vm = new-vm @param
+
+    # set the boot order
+    $bootorder = @(
+        Get-VMHardDiskDrive -VM $vm
+        Get-VMNetworkAdapter $vm
+    )
+    Set-VMFirmware -VM $vm -BootOrder $bootorder
+
+    # start the vm
+    start-vm -Name $name
+}
+
 ## setup DOMAIN-1
 # create the VM
 New-VMFromTemplate -name "DOMAIN-1" -vhdxpath "D:\hyperv\disks\" -vhdxtemplate "D:\hyperv\disks\template.vhdx" -switch "domain" -memory 1
