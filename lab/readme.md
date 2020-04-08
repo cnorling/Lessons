@@ -28,9 +28,15 @@ You can break a VM into two basic parts. The virtual hard drive, and a manifest 
 If you have worked with hyper-v in the past, you might have run into this "issue" where you create a virtual machine, start it up, and it just stays at the hyper-v boot screen. The default boot order starts with a network adapter, NOT an ISO like you might normally think. You can fix this by changing the boot order before you start the virtual machine.
 
 ## the vm isn't dead until the VHDX is nuked
-When you delete a virtual machine wether it's via powershell or the GUI, you have only deleted that virtual machine's metadata. The hard disk is still around and will have to be removed as well if you want to completely remove the virtual machine.
+When you delete a virtual machine wether it's via powershell or the GUI, you have only deleted that virtual machine's metadata. The hard disk is still around and will have to be removed as well if you want to completely remove the virtual machine. VMware has an option do that for you when you tell it to. Get-help on Remove-VM will even tell you that it doesn't delete the hard disk.
 
-## hard disks are the cool kid's templates
-when you want to clone a virtual machine, you can copy the hard disk, then create a virtual machine and bind it to the hard disk. The copy hard disk operation is what takes up the most time. 
+## virtual hard disks are the cool kid's templates
+when you want to clone a virtual machine, you can copy the hard disk, then create a virtual machine and bind it to the hard disk. The copy hard disk operation is what takes up the most time, but with an SSD it should be pretty quick.
+
+## invoke-command on vms
+Invoke-command, New-PSSession, and most of the remote machine cmdlets support hyper-v vms. You can authenticate into the target machine as long as you have a local administrative account or a domain account that is an administrator on the target computer. This is really useful for setting up domain controllers and working with vms that aren't on your domain yet.
+
+## snapshots
+I don't think I need to talk too much about snapshots, but it is some functionality that you'll want to keep in mind. If you've ever worked with Vmware snapshots, they're really similar. Snapshots play off of eachother in sequentially just like you would have in ESXI. 
 
 # Part 2: Setting up an active directory homelab with Powershell

@@ -37,13 +37,9 @@ get-vm "template" | remove-vm
 Get-Item "C:\hyperv\disks\TEMPLATE.vhdx" | Copy-Item -Destination "C:\hyperv\disks\NEWVM.vhdx"
 
 # now we need to create a vm and associate it's metadata with that hard disk
-
 $name = "NEWVM"
-$vhdxtemplate = "C:\hyperv\disks\"
-$vhdxpath = "C:\hyperv\disks"
-$memory = 2
 
-## verify vm doesn't exist already
+# verify vm doesn't exist already
 if ((get-vm $name -ErrorAction SilentlyContinue)) {
     throw "VM already exists"
 }
@@ -51,7 +47,7 @@ if ((get-vm $name -ErrorAction SilentlyContinue)) {
 # create new vm and mount vhdx
 $param = @{
     name = $name
-    memorystartupbytes = [int64]$memory * 1GB
+    memorystartupbytes = [int64]2 * 1GB
     vhdpath = "C:\hyperv\disks\$name.vhdx"
     switchname = "lab"
     generation = 2
@@ -67,3 +63,35 @@ Set-VMFirmware -VM $vm -BootOrder $bootorder
 
 # start the vm
 start-vm -Name $name
+
+# you now have a working virtual machine! you can even use invoke-command on it to manage it without a domain.
+# first you setup some credentials
+$accounts = @{
+    domainadmin = @{
+        username = "home.lab\administrator"
+        password = ConvertTo-SecureString -AsPlainText -Force -String "Domain!"
+    }
+    localadmin = @{
+        username = "administrator"
+        password = ConvertTo-SecureString -AsPlainText -force -String "Homelab!"
+    }
+}
+$credential = @{
+    domainadmin = new-object pscredential -argumentlist $accounts.domainadmin.username,$accounts.domainadmin.password
+    localadmin = new-object pscredential -argumentlist $accounts.localadmin.username,$accounts.localadmin.password
+}
+
+# then you call invoke-command!
+Invoke-Command -VMName "NEWVM" -Credential $credential.localadmin {
+    $env:computername
+}
+
+# snapshots
+get-command "*vmsnapshot*"
+
+# you can take snapshots with checkpoint-vm
+Checkpoint-VM -Name "NEWVM" -SnapshotName "snip"
+Checkpoint-VM -Name "NEWVM" -SnapshotName "snap"
+
+# and revert with restore-vmshapshot
+Get-VMSnapshot -VMName "NEWVM" -Name "snip" | Restore-VMSnapshot

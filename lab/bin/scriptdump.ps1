@@ -133,15 +133,10 @@ $accounts = @{
         username = "administrator"
         password = ConvertTo-SecureString -AsPlainText -force -String "Homelab!"
     }
-    pdqhelper = @{
-        username = "home.lab\pdqhelper"
-        password = ConvertTo-SecureString -AsPlainText -force -String "PDQRocks!"
-    }
 }
 $credential = @{
     domainadmin = new-object pscredential -argumentlist $accounts.domainadmin.username,$accounts.domainadmin.password
     localadmin = new-object pscredential -argumentlist $accounts.localadmin.username,$accounts.localadmin.password
-    pdqhelper = new-object pscredential -argumentlist $accounts.pdqhelper.username,$accounts.pdqhelper.password
 }
 
 ## setup DOMAIN-1
