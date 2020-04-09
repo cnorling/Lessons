@@ -34,10 +34,10 @@ start-vm -Name $name
 get-vm "template" | remove-vm
 
 # the vm is gone, but the hard disk of that VM is still around. We can use that as our template!
-Get-Item "C:\hyperv\disks\TEMPLATE.vhdx" | Copy-Item -Destination "C:\hyperv\disks\NEWVM.vhdx"
+Get-Item "C:\hyperv\disks\TEMPLATE.vhdx" | Copy-Item -Destination "C:\hyperv\disks\COOLVM-1.vhdx"
 
 # now we need to create a vm and associate it's metadata with that hard disk
-$name = "NEWVM"
+$name = "COOLVM-1"
 
 # verify vm doesn't exist already
 if ((get-vm $name -ErrorAction SilentlyContinue)) {
@@ -82,16 +82,33 @@ $credential = @{
 }
 
 # then you call invoke-command!
-Invoke-Command -VMName "NEWVM" -Credential $credential.localadmin {
+Invoke-Command -VMName "COOLVM-1" -Credential $credential.localadmin {
     $env:computername
 }
 
-# snapshots
-get-command "*vmsnapshot*"
+# the name isn't right, why is that?
+
+# how do I get files on this VM?
+$session = New-PSSession -VMName "COOLVM-1" -Credential $credential.localadmin
+New-Item -Path "C:\hyperv\hello.txt" -Value "It's ya girl"
+Copy-Item -Path "C:\hyperv\hello.txt" -ToSession $session -Destination "C:\hello.txt"
+Invoke-Command $session {
+    Get-Content "C:\hello.txt"
+}
 
 # you can take snapshots with checkpoint-vm
-Checkpoint-VM -Name "NEWVM" -SnapshotName "snip"
-Checkpoint-VM -Name "NEWVM" -SnapshotName "snap"
+Checkpoint-VM -Name "COOLVM-1" -SnapshotName "snip-1"
+Checkpoint-VM -Name "COOLVM-1" -SnapshotName "snip-2"
+Checkpoint-VM -Name "COOLVM-1" -SnapshotName "snip-3"
 
 # and revert with restore-vmshapshot
-Get-VMSnapshot -VMName "NEWVM" -Name "snip" | Restore-VMSnapshot
+Get-VMSnapshot -VMName "COOLVM-1" -Name "snip-1" | Restore-VMSnapshot
+
+# where do the snapshots actually go?
+Get-ChildItem "C:\hyperv\disks\*avhdx"
+
+# what happens when I remove snip-2 with remove-vmsnapshot and try to restore onto snip-3?
+get-vm "COOLVM-1" | Get-VMSnapshot "snip-2" | Remove-VMSnapshot
+get-vm "COOLVM-1" | Get-VMSnapshot "snip-3" | Restore-VMSnapshot
+
+# what would happen if I hard deleted snip-2 and tried to restore onto snip-3?
