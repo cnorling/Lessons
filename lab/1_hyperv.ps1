@@ -108,7 +108,7 @@ Get-VMSnapshot -VMName "COOLVM-1" -Name "snip-1" | Restore-VMSnapshot
 Get-ChildItem "C:\hyperv\disks\*avhdx"
 
 # what happens when I remove snip-2 with remove-vmsnapshot and try to restore onto snip-3?
-get-vm "COOLVM-1" | Get-VMSnapshot "snip-2" | Remove-VMSnapshot
-get-vm "COOLVM-1" | Get-VMSnapshot "snip-3" | Restore-VMSnapshot
+get-vm "COOLVM-1" | Get-VMSnapshot -Name "snip-2" | Remove-VMSnapshot
+get-vm "COOLVM-1" | Get-VMSnapshot -name "snip-3" | Restore-VMSnapshot
 
 # what would happen if I hard deleted snip-2 and tried to restore onto snip-3?
