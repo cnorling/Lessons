@@ -65,7 +65,7 @@ $accounts = @{
     # create a credential object for your domain admin creds
     domainadmin = @{
         username = "home.lab\administrator"
-        password = ConvertTo-SecureString -AsPlainText -Force -String "Domain!"
+        password = ConvertTo-SecureString -AsPlainText -Force -String "Homelab!"
     }
     # create a credential object for your local admin password (to setup all 6 machines)
     localadmin = @{
@@ -83,6 +83,7 @@ $credential = @{
 New-VMFromTemplate -name "DOMAIN-1" -vhdxpath "C:\hyperv\disks\" -vhdxtemplate "C:\hyperv\disks\2016-core-template.vhdx" -switch "lab" -memory 1
 
 # sysprep the vm
+invoke-command -VMName "DOMAIN-1" -Credential $credential.localadmin {& "C:\windows\system32\sysprep\sysprep.exe" /generalize /reboot /oobe}
 
 # rename the vm, set a static IP address, and add some windowsfeatures
 Invoke-Command -VMname "DOMAIN-1"-Credential $credential.localadmin {
