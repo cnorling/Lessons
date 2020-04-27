@@ -14,12 +14,20 @@ If you've spent anytime in the IT workspace, you've likely heard of Git, or Gith
 |Repository|A collection of branches that make up your codebase|
 |HEAD|The latest commit of a branch|
 |Master|The default branch when you initialize a git repository. Master is often used as the source for production code.|
+|Git Fetch|Allows you to see changes made to a remote repository.|
+|Git Pull|Allows you to pull down changes made to a remote repository. It also allows you to pull changes from one local branch into another local branch.|
 
 ## My development environment
 I'm using Visual Studio Code, Git for windows, and the Powershell module Posh-Git to manage my changes. Familiarity with commands is helpful but is not required. VSCode has a builtin section for managing source control that is very friendly to work in. I'm just more comfortable calling git from the command line. Normally, you don't have any visibility at the command line without calling a command and getting output. The powershell module Posh-Git writes to your command prompt and gives you that visibility.
 
+## Staging changes
+You can stage changes by calling Git Add. It allows you to make multiple changes simultaneously and stage certain ones for a commit. You can also select all the edited files with Git Add *.
+
 ## Commits
-A commit is simply put as a recorded change to one or more text files. The changes are all timestamped and sequentially arranged to form a comprehensive history of your code. You can create a commit by calling "Git Commit" 
+A commit is simply put as a recorded change to one or more text files. The changes are all timestamped and sequentially arranged to form a comprehensive history of your code. You can create a commit by calling "Git Commit". Each commit requires a brief message that describes the changes you made. You use the -m switch followed by a string to enter your commit message.
+
+### Checking out things other than HEAD
+When you checkout a branch, by default it checks out the HEAD of the branch. You can checkout an earlier commit by finding the commit hash with Git Log, copying it, then calling Git Checkout <COMMIT_HASH>
 
 ## Branches
 ## Working with remote repositories
@@ -34,5 +42,8 @@ Merge conflicts occur when the same line on the same file has been changed in tw
 Most of this stuff you probably won't have to do. 
 
 ## Other uncommon commands
+
+### Quitting editors
+When you call certain commands (like git log), you will be brought into a text editor or browser. You can exit by pressing SHIFT + Q
 
 ## CI/CD, Jenkins, and Powershell
