@@ -33,6 +33,9 @@ When you checkout a branch, by default it checks out the HEAD of the branch. You
 ## Working with remote repositories
 Git is all about collaboration. With Git repositories, you have your local copy of code, and then you have the remote copy. Changes can potentially be introduced by someone else's commits and your local copy can get stale. You can 
 
+## what about the metadata?
+Metadata has to be stored somewhere locally. For Git, that location is the folder .git.
+
 ## working with pull requests
 
 ## Merge conflicts
@@ -42,6 +45,9 @@ Merge conflicts occur when the same line on the same file has been changed in tw
 Most of this stuff you probably won't have to do. 
 
 ## Other uncommon commands
+
+###reflog
+reflog lets you look at your recent commit history in a compact format. It's less verbose than git log but it's easier to use.
 
 ### Quitting editors
 When you call certain commands (like git log), you will be brought into a text editor or browser. You can exit by pressing SHIFT + Q
