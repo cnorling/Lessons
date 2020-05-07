@@ -31,7 +31,7 @@ When you checkout a branch, by default it checks out the HEAD of the branch. You
 
 ## Branches
 ## Working with remote repositories
-Git is all about collaboration. With Git repositories, you have your local copy of code, and then you have the remote copy. Changes can potentially be introduced by someone else's commits and your local copy can get stale. You can 
+Git is all about collaboration. With Git repositories, you have your local copy of code, and then you have the remote copy. Changes can potentially be introduced by someone else's commits and your local copy can get stale. The owner of that branch, or the issue associated with that branch should make sure that their branch stays hydrated and up to date.
 
 ## what about the metadata?
 Metadata has to be stored somewhere locally. For Git, that location is the folder .git.
