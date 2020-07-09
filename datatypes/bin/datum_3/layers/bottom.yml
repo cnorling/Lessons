@@ -1,0 +1,7 @@
+specs:
+  template: server 2016
+  cpu: 1
+  ram: 4
+  disks:
+  - 100
+  - 10

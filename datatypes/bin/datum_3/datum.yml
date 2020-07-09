@@ -1,0 +1,9 @@
+ResolutionPrecedence:
+  - layers\top\$node
+  - layers\bottom
+
+default_lookup_options: deep
+
+lookup_options:
+  specs\disks:
+    merge_basetype_array: sum

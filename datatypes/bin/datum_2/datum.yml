@@ -1,0 +1,5 @@
+ResolutionPrecedence:
+  - layers\top\$node
+  - layers\bottom
+
+default_lookup_options: deep

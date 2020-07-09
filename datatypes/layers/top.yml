@@ -1,0 +1,4 @@
+SERVER-01:
+  specs:
+    template: server 2016
+    cpu: 100

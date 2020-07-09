@@ -1,0 +1,3 @@
+ResolutionPrecedence:
+  - layers\top\$node
+  - layers\bottom

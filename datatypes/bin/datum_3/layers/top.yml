@@ -1,0 +1,5 @@
+SERVER-01:
+  specs:
+    cpu: 100
+    disks:
+    - 6
