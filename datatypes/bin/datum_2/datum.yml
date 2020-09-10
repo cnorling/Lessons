@@ -1,5 +1,5 @@
 ResolutionPrecedence:
-  - layers\top\$node
+  - layers\top\$nodemetadata.stats.advanced
   - layers\bottom
 
 default_lookup_options: deep

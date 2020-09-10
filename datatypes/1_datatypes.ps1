@@ -60,6 +60,7 @@ $array
 $hundredthousand = 1..100000
 $array = @()
 $arraylist = [system.collections.arraylist]::new()
+$genericlist = New-Object System.Collections.Generic.List[UInt32]
 
 Measure-Command {
     foreach ($number in $hundredthousand) {

@@ -1,3 +1,5 @@
 ResolutionPrecedence:
   - layers\top
   - layers\bottom
+
+default_lookup_options: deep
